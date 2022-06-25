@@ -33,7 +33,7 @@ export const normQuillDelta = delta => {
  */
 const updateCursor = (quillCursors, aw, clientId, doc, type) => {
   try {
-    if (aw && aw.cursor && clientId !== doc.clientID) {
+    if (aw && aw.cursor) {
       const user = aw.user || {}
       const color = user.color || '#ffa500'
       const name = user.name || `User: ${clientId}`
