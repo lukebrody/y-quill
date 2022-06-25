@@ -33,18 +33,19 @@ export const normQuillDelta = delta => {
  */
 const updateCursor = (quillCursors, aw, clientId, doc, type) => {
   try {
+    const cursorId = clientId === doc.clientID ? 'self' : clientId.toString()
     if (aw && aw.cursor) {
       const user = aw.user || {}
       const color = user.color || '#ffa500'
       const name = user.name || `User: ${clientId}`
-      quillCursors.createCursor(clientId.toString(), name, color)
+      quillCursors.createCursor(cursorId, name, color)
       const anchor = Y.createAbsolutePositionFromRelativePosition(Y.createRelativePositionFromJSON(aw.cursor.anchor), doc)
       const head = Y.createAbsolutePositionFromRelativePosition(Y.createRelativePositionFromJSON(aw.cursor.head), doc)
       if (anchor && head && anchor.type === type) {
-        quillCursors.moveCursor(clientId.toString(), { index: anchor.index, length: head.index - anchor.index })
+        quillCursors.moveCursor(cursorId, { index: anchor.index, length: head.index - anchor.index })
       }
     } else {
-      quillCursors.removeCursor(clientId.toString())
+      quillCursors.removeCursor(cursorId)
     }
   } catch (err) {
     console.error(err)

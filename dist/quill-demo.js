@@ -13410,18 +13410,19 @@
    */
   const updateCursor = (quillCursors, aw, clientId, doc, type) => {
     try {
+      const cursorId = clientId === doc.clientID ? 'self' : clientId.toString();
       if (aw && aw.cursor) {
         const user = aw.user || {};
         const color = user.color || '#ffa500';
         const name = user.name || `User: ${clientId}`;
-        quillCursors.createCursor(clientId.toString(), name, color);
+        quillCursors.createCursor(cursorId, name, color);
         const anchor = createAbsolutePositionFromRelativePosition(createRelativePositionFromJSON(aw.cursor.anchor), doc);
         const head = createAbsolutePositionFromRelativePosition(createRelativePositionFromJSON(aw.cursor.head), doc);
         if (anchor && head && anchor.type === type) {
-          quillCursors.moveCursor(clientId.toString(), { index: anchor.index, length: head.index - anchor.index });
+          quillCursors.moveCursor(cursorId, { index: anchor.index, length: head.index - anchor.index });
         }
       } else {
-        quillCursors.removeCursor(clientId.toString());
+        quillCursors.removeCursor(cursorId);
       }
     } catch (err) {
       console.error(err);
@@ -13434,7 +13435,7 @@
      * @param {any} quill
      * @param {Awareness} [awareness]
      */
-    constructor(type, quill, awareness) {
+    constructor (type, quill, awareness) {
       const doc = /** @type {Y.Doc} */ (type.doc);
       this.type = type;
       this.doc = doc;
@@ -13503,7 +13504,7 @@
           const aw = /** @type {any} */ (awareness.getLocalState());
           if (sel === null) {
             if (awareness.getLocalState() !== null) {
-              awareness.setLocalStateField('cursor', /** @type {any} */(null));
+              awareness.setLocalStateField('cursor', /** @type {any} */ (null));
             }
           } else {
             const anchor = createRelativePositionFromTypeIndex(type, sel.index);
@@ -13533,7 +13534,7 @@
         awareness.on('change', this._awarenessChange);
       }
     }
-    destroy() {
+    destroy () {
       this.type.unobserve(this._typeObserver);
       this.quill.off('editor-change', this._quillObserver);
       if (this.awareness) {
